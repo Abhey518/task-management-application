@@ -178,6 +178,7 @@ const updateTask = async (req, res) => {
 
 
 // PATCH /api/tasks/:id/assign
+// Normal user only - self-assign an unassigned task
 
 const assignTask = async (req, res) => {
     try {
@@ -190,24 +191,54 @@ const assignTask = async (req, res) => {
             });
         }
 
-        const { assignedTo } = req.body;
-
-        if(req.user.role === "admin") {
-
-            // Admin can assign or reassign task to anyone
-            task.assignedTo = assignedTo || null;
-
-        } else {
-            // Normal users can only assign unassigned task to themselves
-            if(task.assignedTo !== null) {
+        if(task.assignedTo !== null) {
                 return res.status(403).json({
                     success: false,
-                    message: "You can only assign tasks to yourself"
+                    message: "This task is already assigned. Only an admin can reassign it"
                 });
-            }
 
-            task.assignedTo = req.user._id;
         }
+
+        task.assignedTo = req.user._id;
+
+        await task.save();
+
+        await task.populate("createdBy", "username email");
+        await task.populate("assignedTo", "username email");
+
+        res.status(200).json({
+            success: true,
+            task
+        });
+
+        
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            message: err.message
+        });
+
+    }
+};
+
+
+// PATCH /api/tasks/:id/reassign
+// Admin only - assign or reassign a task to any user (or unassign with null)
+
+const reassignTask = async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+
+        if(!task) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found"
+            });
+        }
+
+        const { assignedTo } = req.body;
+
+        task.assignedTo = assignedTo || null;
 
         await task.save();
 
@@ -221,7 +252,7 @@ const assignTask = async (req, res) => {
 
     } catch (err) {
         res.status(400).json({
-            success: true,
+            success: false,
             message: err.message
         });
 
@@ -236,7 +267,7 @@ const deleteTask = async (req, res) => {
         const task = await Task.findById(req.params.id);
 
         if(!task) {
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 message: "Task not found"
             });
@@ -268,4 +299,4 @@ const deleteTask = async (req, res) => {
     }
 };
 
-module.exports = { getAllTasks, getTaskById, createTask, updateTask, assignTask, deleteTask };
+module.exports = { getAllTasks, getTaskById, createTask, updateTask, assignTask, reassignTask, deleteTask };

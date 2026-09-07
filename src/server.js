@@ -6,6 +6,7 @@ dotenv.config();
 
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 if (!process.env.JWT_SECRET) {
     console.log("FAIL: JWT_SECRET is not defined in .env");
@@ -25,6 +26,8 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 
 app.use("/api/tasks", taskRoutes);
+
+app.use("/api/users", userRoutes);
 
 app.get("/api/health", (req, res) => {
     res.json({ message: "API is running"});
