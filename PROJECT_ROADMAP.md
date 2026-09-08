@@ -304,7 +304,7 @@ The backend performs these checks because frontend restrictions alone are not se
 - ✅ Verified the health endpoint returns a JSON response in the browser
 - ✅ Created and reviewed the `User` model with password hashing, password comparison, roles, and timestamps
 - ✅ Created and reviewed the `Task` model with status validation, user references, and timestamps
-- ⬜ Remove the temporary `backend/test-connection.js` file after final connection verification
+- ✅ Removed `backend/test-connection.js` from Git tracking by adding it to `backend/.gitignore` after connection verification
 
 #### 2026-09-05
 - ✅ Added JWT authentication middleware with protected-route and role-restriction support
@@ -321,6 +321,11 @@ The backend performs these checks because frontend restrictions alone are not se
 - ✅ Mounted `/api/tasks` and `/api/users` in `backend/src/server.js`
 - ✅ Added the admin seed script in `backend/scripts/seedAdmin.js`
 - ✅ Verified `npm run seed:admin` completes successfully and creates the seeded admin account
+- ✅ Deployed the backend to Railway
+- ✅ Live backend URL: `https://task-management-application-production-0756.up.railway.app`
+- ✅ Verified the deployed `/api/health` endpoint and production API routes using the live Railway URL
+- ✅ Health response: `{"message":"API is running"}`
+- ⬜ Restrict CORS to the deployed frontend URL after frontend deployment
 - ⬜ Start the frontend React project and build the login/register + task board UI
 
 **Day 2-3:** Frontend Setup & Integration
@@ -334,7 +339,8 @@ The backend performs these checks because frontend restrictions alone are not se
 - Full role-based permissions
 
 **Day 5-6:** Deployment
-- Backend to Render/Railway
+- ✅ Backend deployed to Railway: `https://task-management-application-production-0756.up.railway.app`
+- ✅ Verified the deployed backend endpoints using the live Railway URL
 - Frontend to Vercel
 - Environment variable configuration
 
@@ -473,7 +479,7 @@ Keep these items in mind while implementing the remaining features:
 - Admin accounts must be created through a seed script or directly in the database, not public registration.
 
 ### Temporary Development Files
-- Remove `backend/test-connection.js` after connection testing is complete.
+- `backend/test-connection.js` is ignored by `backend/.gitignore` and is no longer tracked by Git after connection testing.
 - Do not commit `.env`, database credentials, or temporary test files.
 - Create an `.env.example` file containing variable names only before sharing the repository.
 

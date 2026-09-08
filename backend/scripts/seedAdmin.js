@@ -25,7 +25,6 @@ const seedAdmin = async () => {
 
         }
 
-
         // Create the admin user
         await User.create({
             username: "admin",
