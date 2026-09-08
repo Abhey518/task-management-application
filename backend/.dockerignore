@@ -1,0 +1,5 @@
+.env
+.env.*
+
+*.log
+npm-debug.log*
