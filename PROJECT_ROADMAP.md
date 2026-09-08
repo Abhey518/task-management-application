@@ -119,9 +119,6 @@ task-management-app/
 ## � MongoDB Security (Important for Deployment)
 
 ### Development (Current Setup)
-- Network Access: `0.0.0.0/0` (Allow from Anywhere)
-- ✅ Easy for development
-- ⚠️ Not secure for production
 
 ### Production Deployment (TODO - Day 6)
 **BEFORE deploying to production, you MUST:**
@@ -132,6 +129,24 @@ task-management-app/
 5. This restricts access to only your deployed server
 
 **Why?** Production databases should NOT be accessible from anywhere - only from your server.
+
+### CORS Configuration
+
+The backend currently uses open CORS during development:
+
+```javascript
+app.use(cors());
+```
+
+This allows requests from any website and is convenient while testing locally or before the frontend URL exists. After deploying the frontend to Vercel, restrict CORS to the deployed frontend URL:
+
+```javascript
+app.use(cors({
+   origin: "https://your-frontend.vercel.app"
+}));
+```
+
+Before the frontend is deployed, leaving CORS open is acceptable for initial testing. After deployment, replace the example URL with the real Vercel URL and verify that frontend API requests still work.
 
 ---
 
@@ -153,6 +168,115 @@ task-management-app/
 ### Admin Only
 - `GET /api/users` - Get all users
 - `GET /api/users/:id` - Get a single user by ID
+
+---
+
+## Assignment Permissions: Rules and Implementation
+
+### Intended permission logic
+
+Tasks use the `assignedTo` field to show who currently owns the task:
+
+- `assignedTo: null` means the task is unassigned and belongs to the shared task pool.
+- Any logged-in normal user can assign an unassigned task to themselves.
+- A normal user cannot assign a task to another person.
+- A normal user cannot assign, take, or change a task that is already assigned.
+- An administrator can assign, reassign, or unassign any task for any user.
+
+Examples:
+
+| Task state | Normal user action | Result |
+| --- | --- | --- |
+| `assignedTo: null` | Assign the task to themselves | Allowed |
+| `assignedTo: null` | Assign the task to a colleague | Not possible through the normal-user endpoint |
+| `assignedTo: someOtherUser` | Take or change the assignment | Denied |
+| Any assignment | Admin assigns, reassigns, or unassigns the task | Allowed |
+
+The task creator does not have special ownership of the assignment. An unassigned task is available to every normal user.
+
+### How the implementation enforces the rules
+
+All task routes use `protect`, so the request must contain a valid JWT before a task operation can run:
+
+```javascript
+// backend/src/routes/taskRoutes.js
+router.use(protect);
+```
+
+Normal-user self-assignment is handled by `assignTask` in
+`backend/src/controllers/taskController.js`:
+
+```javascript
+const assignTask = async (req, res) => {
+   try {
+      const task = await Task.findById(req.params.id);
+
+      if (!task) {
+         return res.status(404).json({
+            success: false,
+            message: "Task not found"
+         });
+      }
+
+      // Only unassigned tasks can be self-assigned.
+      if (task.assignedTo !== null) {
+         return res.status(403).json({
+            success: false,
+            message: "This task is already assigned. Only an admin can reassign it"
+         });
+      }
+
+      // The authenticated user's ID is always used.
+      // The request cannot choose another user's ID.
+      task.assignedTo = req.user._id;
+
+      await task.save();
+   } catch (err) {
+      // Error response omitted here for brevity.
+   }
+};
+```
+
+The route connects the endpoint to that controller:
+
+```javascript
+router.patch("/:id/assign", assignTask);
+```
+
+This means a normal user can only claim an unassigned task for themselves. The controller never reads an assignee ID from the request body, so the user cannot select a colleague.
+
+Admin reassignment uses a separate endpoint protected by `restrictTo("admin")`:
+
+```javascript
+router.patch("/:id/reassign", restrictTo("admin"), reassignTask);
+```
+
+The role middleware checks the authenticated user's role:
+
+```javascript
+const restrictTo = (...roles) => {
+   return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+         return res.status(403).json({
+            success: false,
+            message: `Access denied. Requires role: ${roles.join(" or ")}`
+         });
+      }
+
+      next();
+   };
+};
+```
+
+The admin controller accepts a user ID or `null` to assign, reassign, or unassign a task:
+
+```javascript
+const { assignedTo } = req.body;
+task.assignedTo = assignedTo || null;
+await task.save();
+```
+
+The backend performs these checks because frontend restrictions alone are not security. A user can send requests directly to the API, so the server must enforce assignment permissions.
 
 ---
 
@@ -358,3 +482,9 @@ Keep these items in mind while implementing the remaining features:
 - Restrict MongoDB Atlas network access instead of leaving `0.0.0.0/0` enabled.
 - Test authentication, role permissions, task assignment, and status persistence.
 - Confirm the frontend uses the deployed backend URL.
+
+### Known Limitation: Concurrent Task Assignment
+
+The current self-assignment flow first reads a task and then saves the current user's ID. If multiple users try to claim the same unassigned task at exactly the same time, a race condition could allow one assignment to overwrite another.
+
+This is intentionally deferred because the project currently has low expected traffic and solving it would require a MongoDB atomic conditional update or transaction. Revisit this if concurrent usage becomes important. The future solution should atomically assign the task only when `assignedTo` is still `null`.

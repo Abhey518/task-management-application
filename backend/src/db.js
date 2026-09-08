@@ -1,7 +1,8 @@
-const dns = require("node:dns");
+// const dns = require("node:dns");
 const mongoose = require("mongoose");
 
-dns.setServers(["1.1.1.1", "8.8.8.8"]); // Set custom DNS servers to avoid DNS resolution issues
+// dns.setServers(["1.1.1.1", "8.8.8.8"]); 
+// Set custom DNS servers to avoid DNS resolution issues
 
 const connectDB = async () => {
     try {

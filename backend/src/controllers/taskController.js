@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const Task = require("../models/Task");
 
 // GET /api/tasks
@@ -237,6 +238,18 @@ const reassignTask = async (req, res) => {
         }
 
         const { assignedTo } = req.body;
+
+        // verify the target user actually exists
+        if(assignedTo) {
+            const userExists = await User.findById(assignedTo);
+
+            if(!userExists) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Target user not found"
+                });
+            }
+        }
 
         task.assignedTo = assignedTo || null;
 
