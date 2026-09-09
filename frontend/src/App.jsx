@@ -1,12 +1,37 @@
-import './App.css'
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+import './App.css';
 
 function App() {
-
+  
   return (
-    <>
-      <h1> Task Manager </h1>
-    </>
+    <BrowserRouter>
+    
+      <Routes>
+
+        <Route path="/login" element={<Login />} />
+
+        {/* Protected routes */}
+        <Route path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard/>
+          </ProtectedRoute>
+        } />
+
+        <Route path="*" element={
+          <Navigate to="/login" replace />
+        } />
+
+      </Routes>
+
+    </BrowserRouter>
   )
-}
+};
 
 export default App;
