@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth"; 
 
+import "../css/Dashboard.css";
+
 const columns = ["To Do", "Doing", "Done"];
 
 function Dashboard() {
