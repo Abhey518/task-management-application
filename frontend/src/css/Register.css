@@ -1,0 +1,28 @@
+.register-container {
+    width: min(90%, 400px);
+    margin: 80px auto;
+    padding: 24px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
+}
+
+.register-container h1 {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.register-container button {
+    width: 100%;
+    padding: 10px;
+    border: 0;
+    border-radius: 4px;
+    color: #ffffff;
+    background: #2563eb;
+    cursor: pointer;
+}
+
+.register-container button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../hooks/useAuth";
+import { Link } from "react-router-dom";
 
 import "../css/Login.css";
 
@@ -41,7 +42,7 @@ function Login() {
     };
 
     return (
-        <div className="login-container">
+        <main className="login-container">
             <h1> Welcome Back </h1>
 
             <form onSubmit={handleSubmit}>
@@ -87,7 +88,12 @@ function Login() {
 
             </form>
 
-        </div>     
+            <p>
+                Do not have an account?{" "}
+                <Link to="/register">Register</Link>
+            </p>
+
+        </main>     
 
     );
 };
