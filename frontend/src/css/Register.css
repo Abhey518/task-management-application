@@ -13,6 +13,8 @@
     color: #173b38;
     font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
     font-size: clamp(1.7rem, 4vw, 2.1rem);
+    line-height: 1.15;
+    text-align: center;
 }
 
 .register-container::after {
@@ -21,6 +23,8 @@
     color: #667875;
     content: "Set up your account in a few quick steps";
     font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: center;
 }
 
 .register-container .form-group {
@@ -84,4 +88,17 @@
 .register-container .auth-switch a {
     color: #0e7490;
     font-weight: 700;
+}
+
+.register-container .error-msg {
+    margin: 0 0 16px;
+    color: #dc2626;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        padding: 28px 22px;
+    }
 }

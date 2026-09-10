@@ -14,6 +14,8 @@
     font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
     font-size: clamp(1.7rem, 4vw, 2.1rem);
     letter-spacing: 0;
+    line-height: 1.15;
+    text-align: center;
 }
 
 .login-container::after {
@@ -22,6 +24,8 @@
     color: #667875;
     content: "Sign in to continue to your workspace";
     font-size: 0.92rem;
+    line-height: 1.45;
+    text-align: center;
 }
 
 .auth-form .form-group {
@@ -92,5 +96,14 @@
 }
 
 .error-msg {
+    margin: 0 0 16px;
     color: #dc2626;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 28px 22px;
+    }
 }
