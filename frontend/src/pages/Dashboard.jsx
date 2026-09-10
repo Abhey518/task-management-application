@@ -4,7 +4,8 @@ import { useAuth } from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
 
 import "../css/Dashboard.css";
-import CreateTaskModal from "../components/CreateTaskModal";
+import TaskModal from "../components/TaskModal";
+import TaskCard from "../components/TaskCard";
 
 const columns = ["To Do", "Doing", "Done"];
 
@@ -13,13 +14,20 @@ function Dashboard() {
 
     const navigate = useNavigate();
 
+    const [tasks, setTasks] = useState([]);
+
+    const [error, setError] = useState("");
+
+    const [showModal, setShowModal] = useState(false);
+
+    const [taskToEdit, setTaskToEdit] = useState(null);
+
+
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
 
-    const [tasks, setTasks] = useState([]);
-    const [error, setError] = useState("");
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -42,9 +50,38 @@ function Dashboard() {
         Done: tasks.filter((task) => task.status === "Done"),
     };
 
-    const [showModal, setShowModal] = useState(false);
 
+    const handleDelete = async (taskId) => {
+        try {
+            await axiosInstance.delete(`/tasks/${taskId}`);
 
+            setTasks(prev => prev.filter((task) => task._id !== taskId));
+
+        } catch {
+            setError("Failed to delete task");
+        }
+        
+    };
+
+    const handleEdit = (task) => {
+        setTaskToEdit(task);
+        setShowModal(true);
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        setTaskToEdit(null);
+    };
+
+    const handleTaskCreated = (task) => {
+        setTasks((prev) => [task, ...prev]);
+    };
+
+    const handleTaskUpdated = (updatedTask) => {
+        setTasks((prev) => 
+            prev.map((task) => task._id === updatedTask._id ? updatedTask : task)
+        );
+    };
 
     return (
         <main className="dashboard">
@@ -60,7 +97,10 @@ function Dashboard() {
                     Logout
                 </button>
 
-                <button type="button" onClick={() => setShowModal(true)}>
+                <button type="button" onClick={() => {
+                    setTaskToEdit(null);
+                    setShowModal(true)
+                }}>
                     Create Task
                 </button>
 
@@ -81,10 +121,12 @@ function Dashboard() {
 
                             ) : (
                                 tasksByStatus[column].map((task) => (
-                                    <article className="task-card" key={task._id}>
-                                        <h3>{task.title}</h3>
-                                        <p>{task.description}</p>
-                                    </article>
+                                    <TaskCard
+                                        key={task._id}
+                                        task={task}
+                                        onDelete={handleDelete}
+                                        onUpdate={handleEdit}
+                                    />
 
                                 ))
                             )}
@@ -96,7 +138,15 @@ function Dashboard() {
 
             </section>
 
-            {showModal && <CreateTaskModal onClose={() => setShowModal(false)} onTaskCreated={(task) => setTasks(prev => [task, ...prev])} />}
+            {showModal && (
+                <TaskModal 
+                    key={taskToEdit?._id || "create"}
+                    taskToEdit={taskToEdit}
+                    onClose={handleModalClose}
+                    onTaskCreated={handleTaskCreated}
+                    onTaskUpdated={handleTaskUpdated}
+                />
+            )}
 
         </main>
     );
