@@ -33,6 +33,7 @@ function Dashboard() {
         const fetchTasks = async () => {
 
             try {
+                setError("");
                 const response = await axiosInstance.get("/tasks");
                 setTasks(response.data.tasks);
 
@@ -52,6 +53,8 @@ function Dashboard() {
 
 
     const handleDelete = async (taskId) => {
+        setError("");
+
         try {
             await axiosInstance.delete(`/tasks/${taskId}`);
 
@@ -64,6 +67,7 @@ function Dashboard() {
     };
 
     const handleEdit = (task) => {
+        setError("");
         setTaskToEdit(task);
         setShowModal(true);
     };
@@ -74,10 +78,12 @@ function Dashboard() {
     };
 
     const handleTaskCreated = (task) => {
+        setError("");
         setTasks((prev) => [task, ...prev]);
     };
 
     const handleTaskUpdated = (updatedTask) => {
+        setError("");
         setTasks((prev) => 
             prev.map((task) => task._id === updatedTask._id ? updatedTask : task)
         );
@@ -99,8 +105,9 @@ function Dashboard() {
                     </button>
 
                     <button className="primary-button" type="button" onClick={() => {
+                        setError("");
                         setTaskToEdit(null);
-                        setShowModal(true)
+                        setShowModal(true);
                     }}>
                         Create Task
                     </button>
@@ -108,7 +115,19 @@ function Dashboard() {
 
             </header>
 
-            {error && <p className="error-msg">{error}</p>}
+            {error && (
+                <div className="dashboard-error" role="alert">
+                    <p className="error-msg">{error}</p>
+                    <button
+                        className="error-dismiss"
+                        type="button"
+                        aria-label="Dismiss error"
+                        onClick={() => setError("")}
+                    >
+                        Close
+                    </button>
+                </div>
+            )}
 
             <section className="task-board">
 

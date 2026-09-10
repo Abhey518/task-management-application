@@ -66,6 +66,38 @@
     background: #f2f8f5;
 }
 
+.dashboard-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: -12px 0 24px;
+    padding: 12px 14px;
+    background: #fff5f5;
+    border: 1px solid #f3caca;
+    border-radius: 7px;
+}
+
+.dashboard-error .error-msg {
+    margin: 0;
+}
+
+.error-dismiss {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    color: #991b1b;
+    background: transparent;
+    border: 1px solid #e9a8a8;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.error-dismiss:hover {
+    background: #fee2e2;
+}
+
 .task-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -124,6 +156,10 @@
 }
 
 @media (max-width: 420px) {
+    .dashboard-error {
+        align-items: flex-start;
+    }
+
     .dashboard-actions {
         flex-direction: column;
     }

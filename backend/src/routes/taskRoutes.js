@@ -25,7 +25,7 @@ router.put("/:id", updateTask);
 
 router.delete("/:id", deleteTask);
 
-router.patch("/:id/assign", assignTask);
+router.patch("/:id/assign", restrictTo("user"), assignTask);
 
 // Admin-only reassignment
 router.patch("/:id/reassign", restrictTo("admin"), reassignTask);

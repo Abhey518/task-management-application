@@ -131,19 +131,40 @@ const updateTask = async (req, res) => {
             });
         }
 
-        // Normal users can only update their own tasks
+        const { title, description, status } = req.body;
 
-        if(req.user.role !== "admin") {
-            if(task.createdBy.toString() !== req.user._id.toString()) {
-                return res.status(403).json({
-                    success: false,
-                    message: "Not authorized to update this task"
-                });
+        const userId = req.user._id.toString();
+        const creatorId = task.createdBy.toString();
+        const assignedUserId = task.assignedTo?.toString();
+        const isAdmin = req.user.role === "admin";
+        const isCreator = creatorId === userId;
+        const isAssignedUser = assignedUserId === userId;
+        const creatorControlsTask =
+            isCreator && (!task.assignedTo || isAssignedUser);
 
-            }
+        if (!isAdmin && !creatorControlsTask && !isAssignedUser) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized to update this task"
+            });
         }
 
-        const { title, description, status } = req.body;
+        // An assigned non-creator may update progress only.
+        if (isAssignedUser && !isCreator && !isAdmin) {
+            if (title !== undefined || description !== undefined) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Assigned users can only change task status"
+                });
+            }
+
+            if (status === undefined) {
+                return res.status(400).json({
+                    success: false,
+                    message: "A status is required"
+                });
+            }
+        }
         
         if(title !== undefined) {
             task.title = title;
@@ -192,12 +213,18 @@ const assignTask = async (req, res) => {
             });
         }
 
-        if(task.assignedTo !== null) {
-                return res.status(403).json({
-                    success: false,
-                    message: "This task is already assigned. Only an admin can reassign it"
-                });
+        if (task.assignedTo) {
+            return res.status(403).json({
+                success: false,
+                message: "This task is already assigned"
+            });
+        }
 
+        if (task.createdBy.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Only the task creator can assign this task"
+            });
         }
 
         task.assignedTo = req.user._id;
@@ -286,15 +313,19 @@ const deleteTask = async (req, res) => {
             });
         }
 
-        // Normal users can only delete tasks they created
+        const userId = req.user._id.toString();
+        const creatorId = task.createdBy.toString();
+        const assignedUserId = task.assignedTo?.toString();
+        const isAdmin = req.user.role === "admin";
+        const isCreator = creatorId === userId;
+        const creatorControlsTask =
+            isCreator && (!task.assignedTo || assignedUserId === userId);
 
-        if(req.user.role !== "admin") {
-            if(task.createdBy.toString() !== req.user._id.toString()) {
-                return res.status(403).json({
-                    success: false,
-                    message: "Not authorized to delete this task"
-                });
-            }
+        if (!isAdmin && !creatorControlsTask) {
+            return res.status(403).json({
+                success: false,
+                message: "Not authorized to delete this task"
+            });
         }
 
         await task.deleteOne();
