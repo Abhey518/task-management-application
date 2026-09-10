@@ -1,0 +1,150 @@
+.admin-eyebrow {
+    margin: 0 0 6px;
+    color: #0e7490 !important;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.admin-page {
+    width: min(100%, 1440px);
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 48px);
+}
+
+.admin-page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #d6e4df;
+}
+
+.admin-page-header h1 {
+    margin: 0 0 6px;
+    color: #173b38;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.admin-page-header > div > p:last-child {
+    margin: 0;
+    color: #667875;
+}
+
+.users-panel {
+    padding: clamp(18px, 3vw, 28px);
+    background: rgb(255 255 255 / 82%);
+    border: 1px solid #dce8e4;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgb(37 70 64 / 6%);
+}
+
+.users-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.users-panel-heading h2 {
+    margin: 0;
+    color: #29413d;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 1.2rem;
+}
+
+.users-panel-heading span {
+    color: #667875;
+    font-size: 0.85rem;
+}
+
+.users-table-wrapper {
+    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    color: #31504a;
+    font-size: 0.9rem;
+}
+
+.users-table th,
+.users-table td {
+    padding: 13px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e1ece8;
+}
+
+.users-table th {
+    color: #667875;
+    background: #f2f8f5;
+    font-size: 0.76rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.users-table tbody tr:hover {
+    background: #f8fbfa;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.role-admin {
+    color: #075985;
+    background: #e0f2fe;
+}
+
+.role-user {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.users-empty {
+    margin: 0;
+    padding: 36px 12px;
+    color: #879792;
+    text-align: center;
+    border: 1px dashed #c9d9d4;
+    border-radius: 7px;
+}
+
+@media (max-width: 768px) {
+    .admin-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-page-header .dashboard-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .admin-page-header .dashboard-actions button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 420px) {
+    .admin-page-header .dashboard-actions {
+        flex-direction: column;
+    }
+
+    .admin-page-header .dashboard-actions button {
+        width: 100%;
+    }
+}

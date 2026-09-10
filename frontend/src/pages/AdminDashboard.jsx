@@ -1,135 +1,58 @@
-import { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { useAuth } from "../hooks/useAuth"; 
+import { useEffect, useState } from "react";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { useAuth } from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
+import TaskCard from "../components/TaskCard";
+import TaskModal from "../components/TaskModal";
+import Navbar from "../components/Navbar";
 
 import "../css/Dashboard.css";
-import Navbar from "../components/Navbar";
-import TaskModal from "../components/TaskModal";
-import TaskCard from "../components/TaskCard";
+import "../css/Admin.css";
 
 const columns = ["To Do", "Doing", "Done"];
 
-function getTaskUserId(user) {
-    return typeof user === "object" ? user?._id : user;
-}
-
-function canUserChangeStatus(task, user) {
-    const userId = getTaskUserId(user);
-    const creatorId = getTaskUserId(task.createdBy);
-    const assignedUserId = getTaskUserId(task.assignedTo);
-    const isCreator = creatorId === userId;
-    const isAssignedUser = assignedUserId === userId;
-    const isUnassigned = !assignedUserId;
-
-    return user?.role === "admin" ||
-        isAssignedUser ||
-        (isCreator && (isUnassigned || isAssignedUser));
-}
-
-function Dashboard() {
+function AdminDashboard() {
     const { user } = useAuth();
-
     const [tasks, setTasks] = useState([]);
-
     const [users, setUsers] = useState([]);
-
     const [error, setError] = useState("");
-
     const [showModal, setShowModal] = useState(false);
-
     const [taskToEdit, setTaskToEdit] = useState(null);
 
-
     useEffect(() => {
-        const fetchTasks = async () => {
-
+        const fetchAdminData = async () => {
             try {
-                setError("");
-                const response = await axiosInstance.get("/tasks");
-                setTasks(response.data.tasks);
+                const [taskResponse, userResponse] = await Promise.all([
+                    axiosInstance.get("/tasks"),
+                    axiosInstance.get("/users"),
+                ]);
 
-            } catch {
-                setError("Unable to load tasks");
+                setTasks(taskResponse.data.tasks);
+                setUsers(userResponse.data.users);
+            } catch (requestError) {
+                setError(
+                    requestError.response?.data?.message ||
+                        "Unable to load admin data"
+                );
             }
         };
 
-        fetchTasks();
+        fetchAdminData();
     }, []);
-
-    useEffect(() => {
-        if (user?.role !== "admin") {
-            return;
-        }
-
-        const fetchUsers = async () => {
-            try {
-                const response = await axiosInstance.get("/users");
-                setUsers(response.data.users);
-            } catch {
-                setError("Unable to load users");
-            }
-        };
-
-        fetchUsers();
-    }, [user]);
-
-    const tasksByStatus = {
-        "To Do": tasks.filter((task) => task.status === "To Do"),
-        Doing: tasks.filter((task) => task.status === "Doing"),
-        Done: tasks.filter((task) => task.status === "Done"),
-    };
-
 
     const handleDelete = async (taskId) => {
         setError("");
 
         try {
             await axiosInstance.delete(`/tasks/${taskId}`);
-
-            setTasks(prev => prev.filter((task) => task._id !== taskId));
-
-        } catch {
-            setError("Failed to delete task");
-        }
-        
-    };
-
-    const handleEdit = (task) => {
-        setError("");
-        setTaskToEdit(task);
-        setShowModal(true);
-    };
-
-    const handleModalClose = () => {
-        setShowModal(false);
-        setTaskToEdit(null);
-    };
-
-    const handleTaskCreated = (task) => {
-        setError("");
-        setTasks((prev) => [task, ...prev]);
-    };
-
-    const handleTaskUpdated = (updatedTask) => {
-        setError("");
-        setTasks((prev) => 
-            prev.map((task) => task._id === updatedTask._id ? updatedTask : task)
-        );
-    };
-
-    const handleAssign = async (taskId) => {
-        setError("");
-
-        try {
-            const res = await axiosInstance.patch(`/tasks/${taskId}/assign`);
-
-            setTasks((prev) =>
-                prev.map((task) => task._id === taskId ? res.data.task : task));
-
-        } catch (err) {
-            setError(err.response?.data?.message || "Unable to assign this task");
-
+            setTasks((previousTasks) =>
+                previousTasks.filter((task) => task._id !== taskId)
+            );
+        } catch (requestError) {
+            setError(
+                requestError.response?.data?.message ||
+                    "Unable to delete task"
+            );
         }
     };
 
@@ -147,52 +70,53 @@ function Dashboard() {
                     task._id === taskId ? response.data.task : task
                 )
             );
-        } catch (err) {
+        } catch (requestError) {
             setError(
-                err.response?.data?.message ||
-                    "Unable to reassign this task"
+                requestError.response?.data?.message ||
+                    "Unable to reassign task"
             );
         }
     };
 
     const handleStatusChange = async (taskId, status) => {
-        setError("");
-
         const previousTask = tasks.find((task) => task._id === taskId);
 
         if (!previousTask || previousTask.status === status) {
             return;
         }
 
-        // Move the card immediately while the server request is in progress.
-        setTasks((prev) =>
-            prev.map((task) =>
+        setError("");
+        setTasks((previousTasks) =>
+            previousTasks.map((task) =>
                 task._id === taskId ? { ...task, status } : task
             )
         );
 
         try {
-            const res = await axiosInstance.put(`/tasks/${taskId}`, { status });
+            const response = await axiosInstance.put(`/tasks/${taskId}`, {
+                status,
+            });
 
-            setTasks((prev) =>
-                prev.map((task) =>
-                    task._id === taskId ? res.data.task : task
+            setTasks((previousTasks) =>
+                previousTasks.map((task) =>
+                    task._id === taskId ? response.data.task : task
                 )
             );
-
-        } catch (err) {
-            setTasks((prev) =>
-                prev.map((task) =>
+        } catch (requestError) {
+            setTasks((previousTasks) =>
+                previousTasks.map((task) =>
                     task._id === taskId ? previousTask : task
                 )
             );
-            setError(err.response?.data?.message || "Unable to update task status");
-
+            setError(
+                requestError.response?.data?.message ||
+                    "Unable to update task status"
+            );
         }
     };
 
     const handleDragEnd = ({ draggableId, destination }) => {
-        if (!destination || destination.droppableId === "") {
+        if (!destination) {
             return;
         }
 
@@ -205,27 +129,57 @@ function Dashboard() {
         handleStatusChange(draggableId, destination.droppableId);
     };
 
+    const handleTaskCreated = (task) => {
+        setTasks((previousTasks) => [task, ...previousTasks]);
+    };
+
+    const handleTaskUpdated = (updatedTask) => {
+        setTasks((previousTasks) =>
+            previousTasks.map((task) =>
+                task._id === updatedTask._id ? updatedTask : task
+            )
+        );
+    };
+
+    const openEditModal = (task) => {
+        setTaskToEdit(task);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setTaskToEdit(null);
+    };
+
+    const tasksByStatus = {
+        "To Do": tasks.filter((task) => task.status === "To Do"),
+        Doing: tasks.filter((task) => task.status === "Doing"),
+        Done: tasks.filter((task) => task.status === "Done"),
+    };
+
     return (
         <main className="dashboard">
             <Navbar />
 
             <header className="dashboard-header">
-
                 <div>
-                    <h1> Task Dashboard </h1>
-                    <p> Welcome, {user?.username || "User"} </p>
+                    <p className="admin-eyebrow">Administrator workspace</p>
+                    <h1>Task Administration</h1>
+                    <p>Manage every task and its assignment.</p>
                 </div>
 
                 <div className="dashboard-actions">
-                    <button className="primary-button" type="button" onClick={() => {
-                        setError("");
-                        setTaskToEdit(null);
-                        setShowModal(true);
-                    }}>
+                    <button
+                        className="primary-button"
+                        type="button"
+                        onClick={() => {
+                            setTaskToEdit(null);
+                            setShowModal(true);
+                        }}
+                    >
                         Create Task
                     </button>
                 </div>
-
             </header>
 
             {error && (
@@ -234,7 +188,6 @@ function Dashboard() {
                     <button
                         className="error-dismiss"
                         type="button"
-                        aria-label="Dismiss error"
                         onClick={() => setError("")}
                     >
                         Close
@@ -244,7 +197,6 @@ function Dashboard() {
 
             <DragDropContext onDragEnd={handleDragEnd}>
                 <section className="task-board">
-
                     {columns.map((column) => (
                         <Droppable droppableId={column} key={column}>
                             {(droppableProvided, droppableSnapshot) => (
@@ -254,17 +206,14 @@ function Dashboard() {
                                     {...droppableProvided.droppableProps}
                                 >
                                     <h2>{column}</h2>
-
                                     <div className="task-list">
                                         {tasksByStatus[column].length === 0 ? (
                                             <p>No tasks yet</p>
-
                                         ) : (
                                             tasksByStatus[column].map((task, index) => (
                                                 <Draggable
                                                     draggableId={task._id}
                                                     index={index}
-                                                    isDragDisabled={!canUserChangeStatus(task, user)}
                                                     key={task._id}
                                                 >
                                                     {(draggableProvided, draggableSnapshot) => (
@@ -273,8 +222,7 @@ function Dashboard() {
                                                             currentUser={user}
                                                             users={users}
                                                             onDelete={handleDelete}
-                                                            onUpdate={handleEdit}
-                                                            onAssign={handleAssign}
+                                                            onUpdate={openEditModal}
                                                             onReassign={handleReassign}
                                                             dragRef={draggableProvided.innerRef}
                                                             dragProps={draggableProvided.draggableProps}
@@ -285,30 +233,26 @@ function Dashboard() {
                                                 </Draggable>
                                             ))
                                         )}
-
                                         {droppableProvided.placeholder}
                                     </div>
                                 </div>
                             )}
                         </Droppable>
                     ))}
-
                 </section>
             </DragDropContext>
 
             {showModal && (
-                <TaskModal 
+                <TaskModal
                     key={taskToEdit?._id || "create"}
                     taskToEdit={taskToEdit}
-                    onClose={handleModalClose}
+                    onClose={closeModal}
                     onTaskCreated={handleTaskCreated}
                     onTaskUpdated={handleTaskUpdated}
                 />
             )}
-
         </main>
     );
+}
 
-};
-
-export default Dashboard;
+export default AdminDashboard;

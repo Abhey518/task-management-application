@@ -3,6 +3,8 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+import AdminUsers from "./pages/AdminUsers.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -22,8 +24,22 @@ function App() {
         {/* Protected routes */}
         <Route path="/dashboard" 
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["user"]}>
             <Dashboard/>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/users"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminUsers />
           </ProtectedRoute>
         } />
 

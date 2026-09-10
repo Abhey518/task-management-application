@@ -99,6 +99,27 @@
     color: #29413d;
 }
 
+.task-reassignment-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 12px 0;
+    color: #29413d;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.task-reassignment-control select {
+    min-width: 130px;
+    padding: 6px 8px;
+    color: #31504a;
+    background: #fbfdfc;
+    border: 1px solid #c7d8d3;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
 .btn-assign {
     color: #ffffff;
     background: #0f766e;

@@ -11,9 +11,11 @@ function getUsername(user) {
 function TaskCard ({
     task,
     currentUser,
+    users,
     onDelete,
     onUpdate,
     onAssign,
+    onReassign,
     dragRef,
     dragProps,
     dragHandleProps,
@@ -65,6 +67,26 @@ function TaskCard ({
                 </p>
 
             </div>
+
+            {isAdmin && (
+                <label className="task-reassignment-control">
+                    <span>Assign task</span>
+
+                    <select
+                        value={assignedUserId || ""}
+                        onChange={(event) =>
+                            onReassign(task._id, event.target.value)
+                        }
+                    >
+                        <option value="">Unassigned</option>
+                        {users.map((user) => (
+                            <option key={user._id} value={user._id}>
+                                {user.username}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+            )}
 
             <div className="task-card-actions">
                 {canAssign && (

@@ -1,0 +1,80 @@
+.app-navbar {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 34px;
+    padding: 12px 0;
+    border-bottom: 1px solid #d6e4df;
+}
+
+.navbar-brand {
+    color: #173b38;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.navbar-link {
+    padding: 8px 10px;
+    color: #667875;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.navbar-link:hover,
+.navbar-link-active {
+    color: #0f766e;
+    background: #e4f3f1;
+}
+
+.navbar-account {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.navbar-user {
+    color: #667875;
+    font-size: 0.86rem;
+}
+
+.navbar-logout {
+    padding: 8px 12px;
+    color: #31504a;
+    background: #ffffff;
+    border: 1px solid #c7d8d3;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.navbar-logout:hover {
+    background: #f2f8f5;
+}
+
+@media (max-width: 560px) {
+    .app-navbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .navbar-links {
+        order: 3;
+        width: 100%;
+    }
+
+    .navbar-account {
+        margin-left: auto;
+    }
+}
