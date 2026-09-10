@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useAuth } from "../hooks/useAuth"; 
 import axiosInstance from "../api/axiosInstance";
 
@@ -8,6 +9,23 @@ import TaskModal from "../components/TaskModal";
 import TaskCard from "../components/TaskCard";
 
 const columns = ["To Do", "Doing", "Done"];
+
+function getTaskUserId(user) {
+    return typeof user === "object" ? user?._id : user;
+}
+
+function canUserChangeStatus(task, user) {
+    const userId = getTaskUserId(user);
+    const creatorId = getTaskUserId(task.createdBy);
+    const assignedUserId = getTaskUserId(task.assignedTo);
+    const isCreator = creatorId === userId;
+    const isAssignedUser = assignedUserId === userId;
+    const isUnassigned = !assignedUserId;
+
+    return user?.role === "admin" ||
+        isAssignedUser ||
+        (isCreator && (isUnassigned || isAssignedUser));
+}
 
 function Dashboard() {
     const { user, logout } = useAuth();
@@ -89,6 +107,71 @@ function Dashboard() {
         );
     };
 
+    const handleAssign = async (taskId) => {
+        setError("");
+
+        try {
+            const res = await axiosInstance.patch(`/tasks/${taskId}/assign`);
+
+            setTasks((prev) =>
+                prev.map((task) => task._id === taskId ? res.data.task : task));
+
+        } catch (err) {
+            setError(err.response?.data?.message || "Unable to assign this task");
+
+        }
+    };
+
+    const handleStatusChange = async (taskId, status) => {
+        setError("");
+
+        const previousTask = tasks.find((task) => task._id === taskId);
+
+        if (!previousTask || previousTask.status === status) {
+            return;
+        }
+
+        // Move the card immediately while the server request is in progress.
+        setTasks((prev) =>
+            prev.map((task) =>
+                task._id === taskId ? { ...task, status } : task
+            )
+        );
+
+        try {
+            const res = await axiosInstance.put(`/tasks/${taskId}`, { status });
+
+            setTasks((prev) =>
+                prev.map((task) =>
+                    task._id === taskId ? res.data.task : task
+                )
+            );
+
+        } catch (err) {
+            setTasks((prev) =>
+                prev.map((task) =>
+                    task._id === taskId ? previousTask : task
+                )
+            );
+            setError(err.response?.data?.message || "Unable to update task status");
+
+        }
+    };
+
+    const handleDragEnd = ({ draggableId, destination }) => {
+        if (!destination || destination.droppableId === "") {
+            return;
+        }
+
+        const task = tasks.find((item) => item._id === draggableId);
+
+        if (!task || task.status === destination.droppableId) {
+            return;
+        }
+
+        handleStatusChange(draggableId, destination.droppableId);
+    };
+
     return (
         <main className="dashboard">
 
@@ -129,35 +212,57 @@ function Dashboard() {
                 </div>
             )}
 
-            <section className="task-board">
+            <DragDropContext onDragEnd={handleDragEnd}>
+                <section className="task-board">
 
-                {columns.map((column) => (
-                    <div className="task-column" key={column}>
+                    {columns.map((column) => (
+                        <Droppable droppableId={column} key={column}>
+                            {(droppableProvided, droppableSnapshot) => (
+                                <div
+                                    className={`task-column${droppableSnapshot.isDraggingOver ? " task-column-dragging-over" : ""}`}
+                                    ref={droppableProvided.innerRef}
+                                    {...droppableProvided.droppableProps}
+                                >
+                                    <h2>{column}</h2>
 
-                        <h2>{column}</h2>
+                                    <div className="task-list">
+                                        {tasksByStatus[column].length === 0 ? (
+                                            <p>No tasks yet</p>
 
-                        <div className="task-list">
-                            {tasksByStatus[column].length === 0 ? (
-                                <p>No tasks yet</p>
+                                        ) : (
+                                            tasksByStatus[column].map((task, index) => (
+                                                <Draggable
+                                                    draggableId={task._id}
+                                                    index={index}
+                                                    isDragDisabled={!canUserChangeStatus(task, user)}
+                                                    key={task._id}
+                                                >
+                                                    {(draggableProvided, draggableSnapshot) => (
+                                                        <TaskCard
+                                                            task={task}
+                                                            currentUser={user}
+                                                            onDelete={handleDelete}
+                                                            onUpdate={handleEdit}
+                                                            onAssign={handleAssign}
+                                                            dragRef={draggableProvided.innerRef}
+                                                            dragProps={draggableProvided.draggableProps}
+                                                            dragHandleProps={draggableProvided.dragHandleProps}
+                                                            isDragging={draggableSnapshot.isDragging}
+                                                        />
+                                                    )}
+                                                </Draggable>
+                                            ))
+                                        )}
 
-                            ) : (
-                                tasksByStatus[column].map((task) => (
-                                    <TaskCard
-                                        key={task._id}
-                                        task={task}
-                                        onDelete={handleDelete}
-                                        onUpdate={handleEdit}
-                                    />
-
-                                ))
+                                        {droppableProvided.placeholder}
+                                    </div>
+                                </div>
                             )}
-                            
-                        </div>
+                        </Droppable>
+                    ))}
 
-                    </div>
-                ))}
-
-            </section>
+                </section>
+            </DragDropContext>
 
             {showModal && (
                 <TaskModal 

@@ -114,6 +114,11 @@
     box-shadow: 0 8px 24px rgb(37 70 64 / 6%);
 }
 
+.task-column-dragging-over {
+    background: rgb(226 243 239 / 88%);
+    border-color: #8fc1b5;
+}
+
 .task-column h2 {
     display: flex;
     align-items: center;
