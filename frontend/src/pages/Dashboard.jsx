@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import axiosInstance from "../api/axiosInstance";
 
 import "../css/Dashboard.css";
+import CreateTaskModal from "../components/CreateTaskModal";
 
 const columns = ["To Do", "Doing", "Done"];
 
@@ -41,6 +42,10 @@ function Dashboard() {
         Done: tasks.filter((task) => task.status === "Done"),
     };
 
+    const [showModal, setShowModal] = useState(false);
+
+
+
     return (
         <main className="dashboard">
 
@@ -53,6 +58,10 @@ function Dashboard() {
 
                 <button type="button" onClick={handleLogout}>
                     Logout
+                </button>
+
+                <button type="button" onClick={() => setShowModal(true)}>
+                    Create Task
                 </button>
 
             </header>
@@ -86,6 +95,8 @@ function Dashboard() {
                 ))}
 
             </section>
+
+            {showModal && <CreateTaskModal onClose={() => setShowModal(false)} onTaskCreated={(task) => setTasks(prev => [task, ...prev])} />}
 
         </main>
     );
