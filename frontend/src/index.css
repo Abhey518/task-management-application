@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+:root {
+	font-family: "DM Sans", "Segoe UI", sans-serif;
+	color: #17212b;
+	background: #edf4f2;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	min-width: 320px;
+	min-height: 100vh;
+	margin: 0;
+	background:
+		radial-gradient(circle at top left, rgb(211 236 229 / 70%), transparent 34rem),
+		linear-gradient(135deg, #f6f8f4 0%, #edf4f2 100%);
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+}
+
+button,
+a {
+	-webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 3px solid rgb(14 116 144 / 28%);
+	outline-offset: 2px;
+}

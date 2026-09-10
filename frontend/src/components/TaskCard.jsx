@@ -11,11 +11,11 @@ function TaskCard ({task, onDelete, onUpdate}) {
 
             <div className="task-card-actions">
 
-                <button onClick={() => onDelete(task._id)}>
+                <button className="btn-delete" type="button" onClick={() => onDelete(task._id)}>
                     Delete
                 </button>  
 
-                <button onClick={() => onUpdate(task)}>
+                <button className="btn-edit" type="button" onClick={() => onUpdate(task)}>
                     Edit
                 </button>
 

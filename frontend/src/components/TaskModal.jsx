@@ -62,7 +62,7 @@ function TaskModal ({ onClose, onTaskCreated, onTaskUpdated, taskToEdit = null }
 
                 <h1>{isEditMode ? "Edit Task" : "Create a Task"} </h1>
 
-                <form onSubmit={handleSubmit}>
+                <form className="task-form" onSubmit={handleSubmit}>
 
                     <div className="form-group">
 
@@ -118,19 +118,21 @@ function TaskModal ({ onClose, onTaskCreated, onTaskUpdated, taskToEdit = null }
 
                     {error && <p className="error-msg">{error}</p>}
 
-                    <button type="submit" disabled={loading}>
-                        {isEditMode 
-                            ? loading 
-                                ? "Saving..." 
-                                : "Save"
-                            : loading 
-                                ? "Creating..." 
-                                : "Create"}
-                    </button>
+                    <div className="modal-actions">
+                        <button className="secondary-button" type="button" onClick={onClose} disabled={loading}>
+                            Cancel
+                        </button>
 
-                    <button type="button" onClick={onClose} disabled={loading}>
-                        Cancel
-                    </button>
+                        <button className="primary-button" type="submit" disabled={loading}>
+                            {isEditMode
+                                ? loading
+                                    ? "Saving..."
+                                    : "Save"
+                                : loading
+                                  ? "Creating..."
+                                  : "Create"}
+                        </button>
+                    </div>
 
                 </form>
 

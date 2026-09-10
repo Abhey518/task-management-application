@@ -45,7 +45,7 @@ function Login() {
         <main className="login-container">
             <h1> Welcome Back </h1>
 
-            <form onSubmit={handleSubmit}>
+            <form className="auth-form" onSubmit={handleSubmit}>
 
                 <div className="form-group">
 
@@ -82,13 +82,13 @@ function Login() {
 
                 {error && <p className="error-msg">{error}</p>}
 
-                <button type="submit" disabled={loading}>
+                <button className="primary-button" type="submit" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                 </button>
 
             </form>
 
-            <p>
+            <p className="auth-switch">
                 Do not have an account?{" "}
                 <Link to="/register">Register</Link>
             </p>

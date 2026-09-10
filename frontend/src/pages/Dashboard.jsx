@@ -93,16 +93,18 @@ function Dashboard() {
                     <p> Welcome, {user?.username || "User"} </p>
                 </div>
 
-                <button type="button" onClick={handleLogout}>
-                    Logout
-                </button>
+                <div className="dashboard-actions">
+                    <button className="secondary-button" type="button" onClick={handleLogout}>
+                        Logout
+                    </button>
 
-                <button type="button" onClick={() => {
-                    setTaskToEdit(null);
-                    setShowModal(true)
-                }}>
-                    Create Task
-                </button>
+                    <button className="primary-button" type="button" onClick={() => {
+                        setTaskToEdit(null);
+                        setShowModal(true)
+                    }}>
+                        Create Task
+                    </button>
+                </div>
 
             </header>
 

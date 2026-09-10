@@ -1,26 +1,31 @@
 .task-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #dce8e4;
     border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 3px 10px rgb(37 70 64 / 6%);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .task-card:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-color: #a9c8bf;
+    box-shadow: 0 8px 18px rgb(37 70 64 / 11%);
     transform: translateY(-2px);
 }
 .task-card h3 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0 0 6px 0;
+    margin: 0 0 7px;
+    overflow-wrap: anywhere;
+    color: #173b38;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
 }
 .task-card p {
-    font-size: 0.85rem;
-    color: #6b7280;
-    margin: 0 0 12px 0;
+    min-height: 2.7em;
+    margin: 0 0 16px;
+    overflow-wrap: anywhere;
+    color: #667875;
+    font-size: 0.88rem;
     line-height: 1.5;
 }
 .task-card-actions {
@@ -29,22 +34,27 @@
     justify-content: flex-end;
 }
 .task-card-actions button {
-    font-size: 0.78rem;
-    padding: 4px 10px;
-    border-radius: 5px;
-    border: none;
+    padding: 7px 11px;
+    border: 1px solid transparent;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 0.78rem;
     font-weight: 500;
-    transition: opacity 0.15s ease;
-}
-.task-card-actions button:hover {
-    opacity: 0.8;
+    transition: background 0.15s ease, border-color 0.15s ease;
 }
 .btn-edit {
-    background: #e0f2fe;
+    background: #e4f3f1;
+    border-color: #c5e1db;
     color: #0369a1;
 }
 .btn-delete {
     background: #fee2e2;
+    border-color: #f5caca;
     color: #dc2626;
+}
+.btn-edit:hover {
+    background: #d5ece8;
+}
+.btn-delete:hover {
+    background: #fbd4d4;
 }

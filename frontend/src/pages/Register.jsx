@@ -59,7 +59,7 @@ function Register() {
         <main className="register-container">
             <h1> Create Account </h1>
 
-            <form onSubmit={handleSubmit}>
+            <form className="auth-form" onSubmit={handleSubmit}>
 
                 <div className="form-group">
 
@@ -131,13 +131,13 @@ function Register() {
 
                 {error && <p className="error-msg">{error}</p>}
 
-                <button type="submit" disabled={loading}>
+                <button className="primary-button" type="submit" disabled={loading}>
                     {loading ? "Creating account..." : "Register"}
                 </button>
 
             </form>
 
-            <p>
+            <p className="auth-switch">
                 Already have an account? {" "}
                 <Link to="/login">Login</Link>
             </p>
