@@ -19,7 +19,13 @@ function Navbar() {
                 className="navbar-brand"
                 to={isAdmin ? "/admin" : "/dashboard"}
             >
-                Taskflow
+                <img
+                    className="navbar-logo"
+                    src="/logo.png"
+                    alt="TaskFlow" 
+                />
+
+                <span> Taskflow </span>
             </NavLink>
 
             <div className="navbar-links">
