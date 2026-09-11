@@ -19,9 +19,17 @@ const connectDB = require("./db");
 const app = express();
 const port = process.env.PORT || 5000;
 
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://taskflow-task-management-application-mu.vercel.app"
+
+];
+
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+    origin: allowedOrigins
+}));
 
 app.use("/api/auth", authRoutes);
 
