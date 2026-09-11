@@ -5,6 +5,7 @@ import axiosInstance from "../api/axiosInstance";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 import Navbar from "../components/Navbar";
+import DashboardStats from "../components/DashboardStats";
 
 import "../css/Dashboard.css";
 import "../css/Admin.css";
@@ -157,6 +158,44 @@ function AdminDashboard() {
         Done: tasks.filter((task) => task.status === "Done"),
     };
 
+    const completedTasks = tasks.filter((task) => task.status === "Done");
+
+    const inProgressTasks = tasks.filter((task) => task.status === "Doing");
+
+    const unassignedTasks = tasks.filter((task) => !task.assignedTo);
+
+    const adminStats = [
+        {
+            label: "Total Users",
+            value: users.length,
+            details: "Registered users and administrators"
+        },
+
+        {
+            label: "Total Tasks",
+            value: tasks.length,
+            details: "Tasks across the entire system"
+        },
+
+        {
+            label: "In Progress",
+            value: inProgressTasks.length,
+            details: "Tasks currently being worked on"
+        },
+
+        {
+            label: "Completed",
+            value: completedTasks.length,
+            details: "Tasks move to Done"
+        },
+
+        {
+            label: "Unassigned Tasks",
+            value: unassignedTasks.length,
+            details: "Tasks waiting for an owner"
+        },
+    ];
+
     return (
         <main className="dashboard">
             <Navbar />
@@ -194,6 +233,8 @@ function AdminDashboard() {
                     </button>
                 </div>
             )}
+
+            <DashboardStats stats={adminStats} />
 
             <DragDropContext onDragEnd={handleDragEnd}>
                 <section className="task-board">
