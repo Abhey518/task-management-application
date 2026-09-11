@@ -7,6 +7,7 @@ import "../css/Dashboard.css";
 import Navbar from "../components/Navbar";
 import TaskModal from "../components/TaskModal";
 import TaskCard from "../components/TaskCard";
+import DashboardStats from "../components/DashboardStats";
 
 const columns = ["To Do", "Doing", "Done"];
 
@@ -164,7 +165,6 @@ function Dashboard() {
             return;
         }
 
-        // Move the card immediately while the server request is in progress.
         setTasks((prev) =>
             prev.map((task) =>
                 task._id === taskId ? { ...task, status } : task
@@ -205,6 +205,46 @@ function Dashboard() {
         handleStatusChange(draggableId, destination.droppableId);
     };
 
+    const userId = user?._id;
+
+    const assignedTasks = tasks.filter((task) => {
+        const assignedUserId = typeof task.assignedTo === "object" ? task.assignedTo?._id : task.assignedTo;
+
+        return assignedUserId === userId;
+    });
+
+    const completedTasks = tasks.filter((task) => task.status === "Done");
+
+    const inProgressTasks = tasks.filter((task) => task.status === "Doing");
+
+    const userStats = [
+        {
+            label: "My Tasks",
+            value: tasks.length,
+            details: "Tasks available on your board"
+        },
+
+        {
+            label: "Assigned to Me",
+            value: assignedTasks.length,
+            details: "Tasks currently assigned to you"
+        },
+
+        {
+            label: "In Progress",
+            value: inProgressTasks.length,
+            details: "Tasks currently being worked on"
+        },
+
+        {
+            label: "Completed",
+            value: completedTasks.length,
+            details: "Tasks moved to Done"
+        },
+    ];
+
+
+
     return (
         <main className="dashboard">
             <Navbar />
@@ -241,6 +281,8 @@ function Dashboard() {
                     </button>
                 </div>
             )}
+
+            <DashboardStats stats={userStats} />
 
             <DragDropContext onDragEnd={handleDragEnd}>
                 <section className="task-board">
