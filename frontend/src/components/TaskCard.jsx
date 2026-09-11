@@ -1,3 +1,5 @@
+import { useState } from "react";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import "../css/components/TaskCard.css";
 
 function getUserId(user) {
@@ -21,6 +23,7 @@ function TaskCard ({
     dragHandleProps,
     isDragging,
 }) {
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     const currentUserId = getUserId(currentUser);
 
@@ -50,22 +53,27 @@ function TaskCard ({
             {...dragProps}
         >
 
-            <h3 {...dragHandleProps}>{task.title}</h3>
+            <div
+                className="task-card-drag-area"
+                {...dragHandleProps}
+            >
+                <h3>{task.title}</h3>
 
-            <p>{task.description || "No description provided"}</p>
+                <p>{task.description || "No description provided"}</p>
 
-            <div className="task-meta">
+                <div className="task-meta">
 
-                <p>
-                    <strong>Created by:</strong>{" "}
-                    {getUsername(task.createdBy) || "You"}
-                </p>
+                    <p>
+                        <strong>Created by:</strong>{" "}
+                        {getUsername(task.createdBy) || "You"}
+                    </p>
 
-                <p>
-                    <strong>Assigned to:</strong>{" "}
-                    {getUsername(task.assignedTo) || "Unassigned"}
-                </p>
+                    <p>
+                        <strong>Assigned to:</strong>{" "}
+                        {getUsername(task.assignedTo) || "Unassigned"}
+                    </p>
 
+                </div>
             </div>
 
             {isAdmin && (
@@ -103,7 +111,7 @@ function TaskCard ({
                     <button
                         className="btn-delete"
                         type="button"
-                        onClick={() => onDelete(task._id)}
+                        onClick={() => setShowDeleteConfirmation(true)}
                     >
                         Delete
                     </button>
@@ -120,6 +128,17 @@ function TaskCard ({
                 )}
 
             </div>
+
+            {showDeleteConfirmation && (
+                <DeleteConfirmModal
+                    taskTitle={task.title}
+                    onCancel={() => setShowDeleteConfirmation(false)}
+                    onConfirm={() => {
+                        setShowDeleteConfirmation(false);
+                        onDelete(task._id);
+                    }}
+                />
+            )}
 
         </article>
     );

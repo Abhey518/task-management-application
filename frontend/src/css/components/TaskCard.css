@@ -20,15 +20,15 @@
     opacity: 0.92;
 }
 
-.task-card h3 {
+.task-card-drag-area {
     cursor: grab;
 }
 
-.task-card h3:active {
+.task-card-drag-area:active {
     cursor: grabbing;
 }
 
-.task-card h3 {
+.task-card-drag-area h3 {
     margin: 0 0 7px;
     overflow-wrap: anywhere;
     color: #173b38;
@@ -128,4 +128,78 @@
 
 .btn-assign:hover {
     background: #115e59;
+}
+
+.delete-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgb(23 59 56 / 48%);
+}
+
+.delete-confirm-modal {
+    width: min(100%, 420px);
+    padding: 26px;
+    background: #ffffff;
+    border: 1px solid #f3caca;
+    border-radius: 12px;
+    box-shadow: 0 22px 60px rgb(23 59 56 / 22%);
+}
+
+.delete-confirm-modal h2 {
+    margin: 0 0 10px;
+    color: #7f1d1d;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 1.35rem;
+}
+
+.delete-confirm-modal p {
+    min-height: auto;
+    margin: 0;
+    color: #667875;
+    overflow-wrap: anywhere;
+}
+
+.delete-confirm-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.delete-confirm-actions button {
+    padding: 10px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.delete-confirm-actions .secondary-button {
+    color: #31504a;
+    background: #ffffff;
+    border: 1px solid #c7d8d3;
+}
+
+.confirm-delete-button {
+    color: #ffffff;
+    background: #b91c1c;
+    border: 1px solid #b91c1c;
+}
+
+.confirm-delete-button:hover {
+    background: #991b1b;
+}
+
+@media (max-width: 420px) {
+    .delete-confirm-actions {
+        flex-direction: column-reverse;
+    }
+
+    .delete-confirm-actions button {
+        width: 100%;
+    }
 }
