@@ -4,7 +4,6 @@ A full-stack task management application with JWT authentication, role-based per
 
 ## Live Application
 
-- GitHub repository: `https://github.com/Abhey518/task-management-application`
 - Frontend: `https://taskflow-task-management-application-mu.vercel.app`
 - Backend API: `https://task-management-application-production-0756.up.railway.app`
 - API health check: `https://task-management-application-production-0756.up.railway.app/api/health`
@@ -125,8 +124,6 @@ MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites
 JWT_SECRET=replace-with-a-long-random-secret
 PORT=5000
 ```
-
-Do not commit `.env` files or real credentials.
 
 ### 3. Seed the administrator account
 
@@ -341,6 +338,3 @@ Then manually verify:
 - Add password reset through verified email addresses.
 - Add automated backend and frontend tests for authentication, permissions, task operations, and drag-and-drop behavior.
 
-## License
-
-This project is available for educational and portfolio use. Add the final license terms here if a specific license is selected.
