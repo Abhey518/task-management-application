@@ -29,13 +29,13 @@ const seedAdmin = async () => {
         await User.create({
             username: "admin",
             email: "admin@taskapp.com",
-            password: "Admin@taskApp26",
+            password: "Admin@password",
             role: "admin"
         });
 
         console.log("Admin user created successfully!");
-        console.log("  Email:    admin@taskapp.com");
-        console.log("  Role:     admin");
+        console.log("  Email: admin@taskapp.com");
+        console.log("  Role: admin");
 
     } catch (err) {
         console.error("Seed failed:", err.message);
