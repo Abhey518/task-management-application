@@ -4,11 +4,10 @@ A full-stack task management application with JWT authentication, role-based per
 
 ## Live Application
 
-- Frontend: `https://your-frontend.vercel.app`
+- GitHub repository: `https://github.com/Abhey518/task-management-application`
+- Frontend: `https://taskflow-task-management-application-mu.vercel.app`
 - Backend API: `https://task-management-application-production-0756.up.railway.app`
 - API health check: `https://task-management-application-production-0756.up.railway.app/api/health`
-
-Replace the frontend placeholder with the final Vercel URL after deployment.
 
 ## Features
 
@@ -108,7 +107,7 @@ Replace the frontend placeholder with the final Vercel URL after deployment.
 ### 1. Clone the repository
 
 ```bash
-git clone <your-github-repository-url>
+git clone https://github.com/Abhey518/task-management-application.git
 cd task-management-application
 ```
 
@@ -287,24 +286,19 @@ VITE_API_BASE_URL=https://task-management-application-production-0756.up.railway
 5. Deploy the frontend.
 6. After deployment, verify registration, login, task operations, drag-and-drop, and administrator reassignment.
 
-After the Vercel URL is known, restrict backend CORS to that origin in `backend/src/server.js` and redeploy the backend.
+The backend CORS configuration currently allows the local development origin and the deployed Vercel origin:
+
+```js
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://taskflow-task-management-application-mu.vercel.app"
+];
+```
+
+Keep this list synchronized if the frontend domain changes.
 
 ## Screenshots
 
-Add screenshots to `docs/screenshots/` and uncomment the matching image lines below.
-
-Suggested files:
-
-- `docs/screenshots/login.png`
-- `docs/screenshots/register.png`
-- `docs/screenshots/user-dashboard.png`
-- `docs/screenshots/admin-dashboard.png`
-- `docs/screenshots/user-management.png`
-- `docs/screenshots/mobile-dashboard.png`
-
-<!-- Uncomment these lines after adding the image files. -->
-
-<!--
 ### Login
 ![Login page](docs/screenshots/login.png)
 
@@ -318,11 +312,8 @@ Suggested files:
 ![Administrator dashboard](docs/screenshots/admin-dashboard.png)
 
 ### User management
-![Administrator user management page](docs/screenshots/user-management.png)
+![Administrator user management page](docs/screenshots/admin-user-management.png)
 
-### Mobile layout
-![Mobile dashboard](docs/screenshots/mobile-dashboard.png)
--->
 
 ## Validation
 
@@ -342,6 +333,13 @@ Then manually verify:
 - An administrator can view all tasks and users.
 - An administrator can reassign and unassign tasks.
 - The deployed frontend communicates with the deployed backend.
+
+## Future Enhancements
+
+- Persist task order within each board column so users can reorder tasks by dragging them above or below other tasks.
+- Add email verification so users must confirm ownership of their email address before logging in.
+- Add password reset through verified email addresses.
+- Add automated backend and frontend tests for authentication, permissions, task operations, and drag-and-drop behavior.
 
 ## License
 
