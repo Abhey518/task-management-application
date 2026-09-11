@@ -213,6 +213,13 @@ function Dashboard() {
         return assignedUserId === userId;
     });
 
+    const tasksCreatedByUserAndAssignedToOthers = tasks.filter((task) => {
+        const creatorId = getTaskUserId(task.createdBy);
+        const assignedUserId = getTaskUserId(task.assignedTo);
+
+        return creatorId === userId && assignedUserId && assignedUserId !== userId;
+    });
+
     const completedTasks = tasks.filter((task) => task.status === "Done");
 
     const inProgressTasks = tasks.filter((task) => task.status === "Doing");
@@ -228,6 +235,12 @@ function Dashboard() {
             label: "Assigned to Me",
             value: assignedTasks.length,
             details: "Tasks currently assigned to you"
+        },
+
+        {
+            label: "Assigned to Others",
+            value: tasksCreatedByUserAndAssignedToOthers.length,
+            details: "Your tasks assigned to another user",
         },
 
         {

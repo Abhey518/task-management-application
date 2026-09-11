@@ -16,7 +16,7 @@ function DashboardStats ({stats}) {
                     </strong>
 
                     <span className="stat-detail">
-                        {stat.detail}
+                        {stat.details}
                     </span>
 
                 </article>

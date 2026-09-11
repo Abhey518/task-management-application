@@ -180,7 +180,7 @@ function AdminDashboard() {
         {
             label: "In Progress",
             value: inProgressTasks.length,
-            details: "Tasks currently being worked on"
+            details: "Active tasks and ongoing work"
         },
 
         {
