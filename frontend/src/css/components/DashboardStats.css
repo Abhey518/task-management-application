@@ -1,0 +1,49 @@
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #dce8e4;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgb(37 70 64 / 6%);
+}
+
+.stat-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #667875;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.stat-value {
+    display: block;
+    color: #173b38;
+    font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.stat-detail {
+    display: block;
+    margin-top: 9px;
+    color: #879792;
+    font-size: 0.78rem;
+}
+
+@media (max-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+}
